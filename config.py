@@ -1,0 +1,3 @@
+APPLICATION_ROOT = '/'
+
+DEBUG = False

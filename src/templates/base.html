@@ -1,0 +1,22 @@
+{% from "macros.html" import declare %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title class="title">{% block title %}{{ title }}{% endblock %}</title>
+        <div class="data">{% block data %}{% endblock %}</div>
+        <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    </head>
+    <body>
+        {% block database %}{% endblock %}
+        {% block content %}{% endblock %}
+        {% block entry %}<div id="reactEntryPoint"></div>{% endblock %}
+        <script 
+            type="text/javascript"
+            src="{% block script %}{{ url_for('static', filename='js/') }}{{ jsfile }}_compiled.js{% endblock %}">
+        </script>
+        <div class="footer"></div>
+    </body>
+</html>
+

@@ -1,0 +1,17 @@
+*.DS_Store
+*.pyc
+*.swp
+*__pycache__*
+*egg-info*
+Session.vim
+cookies.txt
+env/*
+node_modules
+session.json
+tmp
+var
+*.log
+starter_files*
+sftp-config.json
+package-lock.json
+*_compiled.js
