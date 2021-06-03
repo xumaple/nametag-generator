@@ -2,5 +2,52 @@
 }
 
 .data {
-    displace:none;
+    display:none;
+}
+
+.main{
+    text-align: center;
+}
+
+.frame {
+    border:0.1in black;
+    border-style: solid;
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.options {
+    position: fixed;
+}
+
+.text {
+    cursor: pointer;
+    position: absolute;
+    text-align: center;
+    /* transform: translate(0px, 0px); */
+    /* left: 0px;
+    top: 0px; */
+}
+.text-highlight {
+    cursor: pointer;
+    position: absolute;
+    transform: translate(0px, 0px);
+    border:0.01in black;
+    border-style: dashed;
+}
+
+.text-font-size {
+    position: absolute;
+    left: 2px;
+    top: 2px;
+}
+
+.edit-text {
+    font-size: smaller;
+    color: cadetblue;
+}
+
+input {
+    border: none;
 }
