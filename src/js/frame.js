@@ -17,8 +17,7 @@ export default function Frame(props) {
   const [texts, setTexts] = useState([]);
   const [fontSizes, setFontSizes] = useState([]);
   const [styles, setStyles] = useState([]);
-  const [currChosen, setChosen] = useState(null);
-  const setCurrChosen = (x) => { setChosen(x); Frame.currChosen=x; }
+  const [currChosen, setCurrChosen] = useState(null);
   const setCurrEditing = (x) => { Frame.currEditing=x; }
   const editText = (id) => {
     if (id === null) { // Saving
@@ -64,30 +63,19 @@ export default function Frame(props) {
   const [currDragged, setCurrDragged] = useState(null);
   const dragText = (id) => { setCurrDragged(id); }
 
-  // useEffect(() => {
-
-  // }, []);
   const onKeyDown = (e) => {
-    if (e.key === 'Backspace' && Frame.currChosen !== null) {
-      console.log(texts, Frame.currChosen)
-      changeText(null, Frame.currChosen);
+    if (e.key === 'Backspace' && currChosen !== null) {
+      console.log(texts, currChosen)
+      changeText(null, currChosen);
       setCurrChosen(null);
     }
   }
 
-  // const thisRef = useRef(null);
-  // useEffect(() => {
-  //   const node = thisRef.current;
-  //   if (node) {
-  //     node.addEventListener('keydown', deleteText);
-  //   }
-  // }, []);
 
   return (<div>
     <div 
       className="frame"
       style={{height: `${height*zoom}px`, width: `${width*zoom}px`}}
-      // ref={thisRef}
       tabIndex="0"
       onKeyDown={onKeyDown}
     >
@@ -112,11 +100,10 @@ export default function Frame(props) {
           <button onClick={()=>setZoom(zoom+1)} >+</button>
         </div>
         <button onClick={newText}>New</button>
-        {Frame.currEditing}
+        
       </div>
     </div>
   </div>);
 }
 
 Frame.currEditing = null;
-Frame.currChosen = null;

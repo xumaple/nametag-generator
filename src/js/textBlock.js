@@ -11,10 +11,7 @@ export default function TextBlock({ text, onChange, zoom, canEdit, onFontSizeCha
   const editText = () => { if (!editing && canEdit()) { setEditing(true);setHovering(false); }}
   const setDoneEditing = () => { setEditing(false); canEdit(0); }
   const saveText = () => {
-    if (text === "") {
-      // setWarning(true);
-      return;
-    }
+    if (text === "") return;
     setDoneEditing();
     if (changed) {
       onChange(currText);
@@ -24,7 +21,6 @@ export default function TextBlock({ text, onChange, zoom, canEdit, onFontSizeCha
   }
   const changeText = (e) => {
     e.preventDefault();
-    // setWarning(false);
     if (e.target.value !== original) {
       setChanged(true);
       setCurrText(e.target.value);
@@ -54,7 +50,6 @@ export default function TextBlock({ text, onChange, zoom, canEdit, onFontSizeCha
 
   // STYLE
   const [isHovering, setHovering] = useState(false);
-  // const [highlighted, setHightlight] = useState(false);
   const boxStyle = {border: "0.01in black", borderStyle: "dashed"};
   const getStyle = (mode) => {
     let s = isHovering?boxStyle:{};
@@ -92,7 +87,7 @@ export default function TextBlock({ text, onChange, zoom, canEdit, onFontSizeCha
     style={getStyle()}
     onClick={(e)=>{e.preventDefault();const node=dblClickRef.current;if(isHovering && node){ onClick(); }}}
   >
-    {printTextBox()}{/*warning?<Warning error=" Text cannot be empty!"/>:""*/}
+    {printTextBox()}
     {isHovering&&!editing?
       <div className="text-font-size">
         <button 

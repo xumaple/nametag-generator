@@ -22,7 +22,6 @@ export default function Text({ text, zoom, id, onChange, onEdit, onFontSizeChang
   });
   const onBeingDragged = (e, {x, y}) => {
     setCurrPos({x, y});
-    // console.log(currPos);
     setDraggablePos(undefined);
     onDrag(id);
   };
