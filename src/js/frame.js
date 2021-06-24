@@ -1,7 +1,10 @@
 import React from 'react';
 import { useState, useRef, useEffect } from "react";
 import Text from "./text";
+import StyleBar from "./stylebar";
 import { defaultText, defaultFontSize } from "./consts";
+import { fetch_with_json } from "./util";
+// import PdfDisplay from './pdfDisplay';
 
 function max(a,b) {
   return a>b?a:b;
@@ -15,6 +18,7 @@ export default function Frame(props) {
   const [width, setWidth] = useState(props.width);
   const [zoom, setZoom] = useState(3);
   const [texts, setTexts] = useState([]);
+  const [positions, setPositions] = useState([]);
   const [fontSizes, setFontSizes] = useState([]);
   const [styles, setStyles] = useState([]);
   const [currChosen, setCurrChosen] = useState(null);
@@ -42,7 +46,7 @@ export default function Frame(props) {
 
   const changeFontSize = (newSize, index) => {
     fontSizes[index] = newSize;
-    setFontSizes(fontSizes);
+    setFontSizes(Array.from(fontSizes));
   }
 
   const newText = () => {
@@ -61,7 +65,11 @@ export default function Frame(props) {
   }
 
   const [currDragged, setCurrDragged] = useState(null);
-  const dragText = (id) => { setCurrDragged(id); }
+  const dragText = (id, x, y) => {
+    if (id !== currDragged) setCurrDragged(id);
+    positions[id] = {x, y};
+    setPositions(Array.from(positions));
+  }
 
   const onKeyDown = (e) => {
     if (e.key === 'Backspace' && currChosen !== null) {
@@ -69,6 +77,18 @@ export default function Frame(props) {
       changeText(null, currChosen);
       setCurrChosen(null);
     }
+  }
+
+  // const pdfId = 
+  const sendFetch = (e) => {
+    e.preventDefault();
+    console.log(texts, positions, fontSizes, styles);
+    fetch_with_json(`${props.url}getPDF`, [texts, positions, fontSizes, styles])
+      .then(response => response.json())
+      .then(data => {
+        data['id']
+      })
+      .catch(error=>{console.log(error);});
   }
 
 
@@ -85,6 +105,7 @@ export default function Frame(props) {
           zoom={zoom}
           onChange={changeText}
           onEdit={editText}
+          fontSize={fontSizes[i]}
           onFontSizeChange={changeFontSize}
           onDrag={dragText}
           onDelete={()=>{changeText(null, i);}}
@@ -95,14 +116,18 @@ export default function Frame(props) {
     </div>
     <div>
       <div className="options">
+        <div><button onClick={sendFetch}>Send</button></div>
         <div>Zoom: 
           <button onClick={()=>setZoom(max(1,zoom-1))}>-</button>
           <button onClick={()=>setZoom(zoom+1)} >+</button>
         </div>
         <button onClick={newText}>New</button>
-        
+        <div>
+          {currChosen !== null ? <StyleBar fontSize={fontSizes[currChosen]} onChange={(x)=>{changeFontSize(x, currChosen)}}/>:""}
+        </div>
       </div>
     </div>
+    {/* <PdfDisplay file={{url: 'http://0.0.0.0:8000/api/v1/getPdf/test.pdf/'}} /> */}
   </div>);
 }
 

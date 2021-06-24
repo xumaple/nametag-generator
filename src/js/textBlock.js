@@ -1,8 +1,8 @@
 import React from 'react';
 import { useState, useRef, useEffect } from "react";
-import { defaultFontSize } from "./consts";
+// import { defaultFontSize } from "./consts";
 
-export default function TextBlock({ text, onChange, zoom, canEdit, onFontSizeChange, highlighted, onClick, style }) {
+export default function TextBlock({ text, onChange, zoom, canEdit, fontSize, onFontSizeChange, highlighted, onClick, style }) {
   // TEXT AND EDITING
   const [editing, setEditing] = useState(false); // boolean for editing mode
   const [changed, setChanged] = useState(false); // boolean for whether or not anything has been changed
@@ -40,13 +40,16 @@ export default function TextBlock({ text, onChange, zoom, canEdit, onFontSizeCha
     return text;
   }
 
-  // FONT
-  const getFontSizeString = (z) => `${zoom*fontSize}px`;
-  const [fontSize, setFontSize] = useState(defaultFontSize);
+  // FONT SIZE
+  const getFontSizeString = (z) => `${zoom*currFontSize}px`;
+  const [currFontSize, setFontSize] = useState(fontSize);
   const setThisFontSize = (f) => {
     setFontSize(f);
     onFontSizeChange(f);
   }
+  useEffect(() =>{
+    if (currFontSize !== fontSize) setFontSize(fontSize);
+  });
 
   // STYLE
   const [isHovering, setHovering] = useState(false);
@@ -59,14 +62,19 @@ export default function TextBlock({ text, onChange, zoom, canEdit, onFontSizeCha
       s['backgroundColor'] = 'coral';
     }
     if (mode === "input") {
-      s['width'] = `${currText.length*fontSize*zoom/2}px`;
+      s['width'] = `${currText.length*currFontSize*zoom/2}px`;
       s['backgroundColor'] = '#d3d3d3';
     }
     return s;
   }
 
   // DOUBLE CLICK
-  const dblCLickListener = editText;
+  const dblCLickListener = (e) => {
+    e.stopPropagation();
+    if (e.target === e.currentTarget) {
+      editText();
+    }
+  };
   const dblClickRef = useRef(null);
   useEffect(() => {
     const node = dblClickRef.current;
@@ -91,13 +99,13 @@ export default function TextBlock({ text, onChange, zoom, canEdit, onFontSizeCha
     {isHovering&&!editing?
       <div className="text-font-size">
         <button 
-          onClick={(e)=>{e.stopPropagation();setThisFontSize(fontSize-1);}}
+          onClick={(e)=>{e.stopPropagation();setThisFontSize(currFontSize-1);}}
           // onMouseEnter={()=>{const node=dblClickRef.current;if(node){node.removeEventListener("dblclick", dblCLickListener);console.log('hello', node);}}}
           // onMouseOut={()=>{const node=dblClickRef.current;if(node){node.addEventListener("dblclick", dblCLickListener);console.log('goodbye');}}}
           // onMouseOut={()=>{const node=dblClickRef.current;if(node)node.addEventListener("dblclick", dblCLickListener)}}
         >-</button>
         <button
-          onClick={(e)=>{e.stopPropagation();setThisFontSize(fontSize+1);}}
+          onClick={(e)=>{e.stopPropagation();setThisFontSize(currFontSize+1);}}
           // onMouseEnter={()=>{const node=dblClickRef.current;if(node){node.removeEventListener("dblclick", dblCLickListener);console.log('hello', node);}}}
           // onMouseOut={()=>{const node=dblClickRef.current;if(node){node.addEventListener("dblclick", dblCLickListener);console.log('goodbye');}}}
         >+</button>

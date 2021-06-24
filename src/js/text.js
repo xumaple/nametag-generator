@@ -4,7 +4,7 @@ import Draggable from 'react-draggable';
 import TextBlock from './textBlock';
 import { defaultFontSize } from "./consts";
 
-export default function Text({ text, zoom, id, onChange, onEdit, onFontSizeChange, onDelete, highlighted, onClick, style, onDrag }) {
+export default function Text({ text, zoom, id, onChange, onEdit, fontSize, onFontSizeChange, onDelete, highlighted, onClick, style, onDrag }) {
   // POSITION AND ZOOM
   const [currZoom, setCurrZoom] = useState(zoom);
   const [draggablePos, setDraggablePos] = useState({x: -15*defaultFontSize, y: 0});
@@ -23,7 +23,7 @@ export default function Text({ text, zoom, id, onChange, onEdit, onFontSizeChang
   const onBeingDragged = (e, {x, y}) => {
     setCurrPos({x, y});
     setDraggablePos(undefined);
-    onDrag(id);
+    onDrag(id, x/currZoom, y/currZoom);
   };
 
   // TEXT
@@ -57,6 +57,7 @@ export default function Text({ text, zoom, id, onChange, onEdit, onFontSizeChang
         onChange={thisOnChange}
         zoom={zoom}
         canEdit={thisOnEdit}
+        fontSize={fontSize}
         onFontSizeChange={(f) => {onFontSizeChange(f, id);}}
         highlighted={highlighted}
         onClick={()=>{onClick(id);}}
