@@ -10,3 +10,4 @@ export function fetch_with_json(url, body, request_type='POST') {
     body: JSON.stringify(body)
   });
 }
+

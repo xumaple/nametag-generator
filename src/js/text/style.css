@@ -1,0 +1,40 @@
+.text {
+    cursor: pointer;
+    position: absolute;
+    text-align: center;
+    /* transform: translate(0px, 0px); */
+    /* left: 0px;
+    top: 0px; */
+}
+
+.text:hover,
+.text:focus,
+.text:active {
+  color: #515e6e;
+  /* border: 0.005in #0070f3; */
+  /* border-style:dashed; */
+}
+
+.text-highlight {
+    cursor: pointer;
+    position: absolute;
+    transform: translate(0px, 0px);
+    border:0.01in black;
+    border-style: dashed;
+}
+
+.text-font-size {
+    position: absolute;
+    left: 2px;
+    top: 2px;
+}
+
+.edit-text {
+    font-size: smaller;
+    color: cadetblue;
+}
+
+input {
+    border: none;
+    border-bottom: 1px solid gray;
+}

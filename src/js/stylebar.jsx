@@ -1,11 +1,14 @@
 import React from 'react';
 import { useState, useRef, useEffect } from "react";
+import { defaultFontSizeList } from './consts';
+import { SelectableOptions } from './utilClasses';
 
 
 function FontSizeBar({ fontSize, onChange }) {
   return <div>
     {/* <input>{fontSize}</input> */}
-    {fontSize}
+    <SelectableOptions options={defaultFontSizeList} currOption={fontSize} onSelect={onChange} />
+    {/* {fontSize} */}
     <button onClick={()=>{onChange(fontSize-1);}}>-</button>
     <button onClick={()=>{onChange(fontSize+1);}}>+</button>
   </div>;

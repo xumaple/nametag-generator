@@ -2,7 +2,8 @@ import React from 'react';
 import { useState, useRef, useEffect } from "react";
 import Draggable from 'react-draggable';
 import TextBlock from './textBlock';
-import { defaultFontSize } from "./consts";
+import { defaultFontSize } from '../consts';
+// import styles from './style.css';
 
 export default function Text({ text, zoom, id, onChange, onEdit, fontSize, onFontSizeChange, onDelete, highlighted, onClick, style, onDrag }) {
   // POSITION AND ZOOM
@@ -51,6 +52,7 @@ export default function Text({ text, zoom, id, onChange, onEdit, fontSize, onFon
       position={draggablePos}
       onDrag={onBeingDragged}
       onKeyDown={(e)=>{console.log(e.key);}}
+      // defaultPosition={{x: 100, y: 100}}
     >
       <div><TextBlock 
         text={currText}

@@ -1,17 +1,15 @@
 import React from 'react';
 import { useState, useRef, useEffect } from "react";
-import Text from "./text";
+import Text from "./text/text";
 import StyleBar from "./stylebar";
 import { defaultText, defaultFontSize } from "./consts";
 import { fetch_with_json } from "./util";
-// import PdfDisplay from './pdfDisplay';
+// import css from './style.css';
+// import PdfDisplay from './pdfDisplay'; 
 
 function max(a,b) {
   return a>b?a:b;
 }
-
-// const [currEditing, setCurrEditing] = useState(null);
-// let currEditing = null;
 
 export default function Frame(props) {
   const [height, setHeight] = useState(props.height);
@@ -39,6 +37,7 @@ export default function Frame(props) {
     if ((isNaN(index)&&index!==null) || index >= texts.length) {
       console.log("Error!! Bad index over array", index, texts);
     }
+    if (newText === "") newText = null;
     texts[index] = newText;
     console.log(texts);
     setTexts(texts);
@@ -72,7 +71,7 @@ export default function Frame(props) {
   }
 
   const onKeyDown = (e) => {
-    if (e.key === 'Backspace' && currChosen !== null) {
+    if (e.key === 'Backspace' && currChosen !== null && currChosen !== Frame.currEditing) {
       console.log(texts, currChosen)
       changeText(null, currChosen);
       setCurrChosen(null);
@@ -91,8 +90,17 @@ export default function Frame(props) {
       .catch(error=>{console.log(error);});
   }
 
+  const [info, setInfo] = useState('BRIGHT');
+  const clickButton = (e) => {
+    fetch('https://google.com')
+      .then(data => setInfo(data))
+      // .then(data => data.json())
+      // .then(json => {
+      //   setInfo(json['field'])
+      // });
+  };
 
-  return (<div>
+  return (<div><button onClick={clickButton}>{info}</button>
     <div 
       className="frame"
       style={{height: `${height*zoom}px`, width: `${width*zoom}px`}}

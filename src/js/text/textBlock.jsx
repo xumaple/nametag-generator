@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState, useRef, useEffect } from "react";
 // import { defaultFontSize } from "./consts";
+import css from './style.css';
 
 export default function TextBlock({ text, onChange, zoom, canEdit, fontSize, onFontSizeChange, highlighted, onClick, style }) {
   // TEXT AND EDITING
@@ -8,7 +9,7 @@ export default function TextBlock({ text, onChange, zoom, canEdit, fontSize, onF
   const [changed, setChanged] = useState(false); // boolean for whether or not anything has been changed
   const [currText, setCurrText] = useState(text); // current state in the input
   const [original, setOriginal] = useState(text); // before current changes
-  const editText = () => { if (!editing && canEdit()) { setEditing(true);setHovering(false); }}
+  const editText = () => { if (!editing && canEdit()) { setEditing(true); }}
   const setDoneEditing = () => { setEditing(false); canEdit(0); }
   const saveText = () => {
     if (text === "") return;
@@ -52,14 +53,11 @@ export default function TextBlock({ text, onChange, zoom, canEdit, fontSize, onF
   });
 
   // STYLE
-  const [isHovering, setHovering] = useState(false);
-  const boxStyle = {border: "0.01in black", borderStyle: "dashed"};
   const getStyle = (mode) => {
-    let s = isHovering?boxStyle:{};
-    s = {...s, ...style};
+    let s = {...style};
     s['fontSize'] = getFontSizeString(zoom);
     if (highlighted) {
-      s['backgroundColor'] = 'coral';
+      s['backgroundColor'] = '#e4bbd8';
     }
     if (mode === "input") {
       s['width'] = `${currText.length*currFontSize*zoom/2}px`;
@@ -90,13 +88,11 @@ export default function TextBlock({ text, onChange, zoom, canEdit, fontSize, onF
   return (<div
     className="text"
     ref={dblClickRef}
-    onMouseEnter={editing?undefined:() => {setHovering(true);}}
-    onMouseLeave={editing?undefined:() => {setHovering(false);}}
     style={getStyle()}
-    onClick={(e)=>{e.preventDefault();const node=dblClickRef.current;if(isHovering && node){ onClick(); }}}
+    onClick={(e)=>{e.preventDefault();const node=dblClickRef.current;if(node){ onClick(); }}}
   >
     {printTextBox()}
-    {isHovering&&!editing?
+    {!editing?
       <div className="text-font-size">
         <button 
           onClick={(e)=>{e.stopPropagation();setThisFontSize(currFontSize-1);}}

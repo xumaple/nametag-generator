@@ -4,6 +4,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Frame from './frame';
 import { frameHeight, frameWidth } from './consts';
+// import css from './style.css';
+
 
 function Index(props) {
   return (
