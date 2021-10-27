@@ -1,5 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import css from './style.css';
+
 
 export function SelectableOptions({ options, currOption, onSelect, textInputWidth } ) {
   const [prevOption, setPrevOption] = useState(currOption);
@@ -42,4 +44,16 @@ export function SelectableOptions({ options, currOption, onSelect, textInputWidt
       })}
     </select>
   </div>);
+}
+
+export function ToggleButton({ buttonText, toggleState, currState, onClick }) { // ToggleState is the state it wants to be in to be selected
+  const [selected, setSelected] = useState(toggleState === currState);
+  console.log(css);
+  useEffect(()=>{
+    setSelected(toggleState === currState);
+  });
+  return <button 
+    className={selected?"toggle-button-y":"toggle-button-n"}
+    onClick={(e) => { e.stopPropagation(); onClick(toggleState); }}
+  >{buttonText}</button>
 }

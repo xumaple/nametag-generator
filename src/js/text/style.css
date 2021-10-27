@@ -38,3 +38,9 @@ input {
     border: none;
     border-bottom: 1px solid gray;
 }
+textarea:focus,
+textarea:active,
+input:focus,
+input:active{ 
+    outline: none;
+}

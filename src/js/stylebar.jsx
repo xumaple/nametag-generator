@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useRef, useEffect } from "react";
 import { defaultFontSizeList, fontFamilysList } from './consts';
-import { SelectableOptions } from './utilClasses';
+import { SelectableOptions, ToggleButton } from './utilClasses';
 
 
 function FontSizeBar({ fontSize, onChange }) {
@@ -20,10 +20,59 @@ function FontBar({ font, onChange }) {
   </div>
 }
 
+function AlignmentBar({ alignment, onChange }) {
+  const {hAlign, vAlign} = alignment;
+
+  const onToggleHAlignButtonClick = (x) => {
+    alignment.hAlign = x;
+    onChange(alignment);
+  }
+  
+  return <div>
+    {/* <button
+      onClick={(e)=>{
+        e.stopPropagation();
+        alignment.hAlign = -1;
+        onChange(alignment);
+      }}
+    >&lt;</button>
+    <button
+      onClick={(e)=>{
+        e.stopPropagation();
+        alignment.hAlign = 0;
+        onChange(alignment);
+      }}
+    >=</button>
+    <button
+      onClick={(e)=>{
+        e.stopPropagation();
+        alignment.hAlign = 1;
+        onChange(alignment);
+      }}
+    >&gt;</button> */}
+    <ToggleButton 
+      buttonText="&lt;"
+      toggleState={-1}
+      currState={hAlign}
+      onClick={onToggleHAlignButtonClick} />
+    <ToggleButton 
+      buttonText="="
+      toggleState={0}
+      currState={hAlign}
+      onClick={onToggleHAlignButtonClick} />
+    <ToggleButton 
+      buttonText="&gt;"
+      toggleState={1}
+      currState={hAlign}
+      onClick={onToggleHAlignButtonClick} />
+  </div>;
+}
+
 export default function StyleBar({ fontSize, onFontSizeChange, alignment, onAlignmentChange, style, onStyleChange }) {
   return <div>
     <FontSizeBar fontSize={fontSize} onChange={onFontSizeChange} />
     <div><br></br></div>
+    <AlignmentBar alignment={alignment} onChange={onAlignmentChange} />
     <FontBar font={style.fontFamily} onChange={(f)=>{style.fontFamily = f;onStyleChange(style);}} />
   </div>;
 }

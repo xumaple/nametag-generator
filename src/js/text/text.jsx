@@ -12,7 +12,7 @@ export default function Text({ text, zoom, id, onChange, onEdit, fontSize, onFon
   const [draggablePos, setDraggablePos] = useState({x: -15*defaultFontSize, y: 0});
   const [currPos, setCurrPos] = useState(draggablePos);
   const textWidth = useTextWidth({text, font: `${fontSize}px ${style.fontFamily}`});
-  // console.log(`${style.fontFamily} ${currZoom*fontSize}px`, textWidth);
+  console.log(`${fontSize}px ${style.fontFamily}`, textWidth);
   useEffect(()=>{
     if (currZoom !== zoom) {
       let {x, y} = currPos;

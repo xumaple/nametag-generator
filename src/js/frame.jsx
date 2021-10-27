@@ -51,6 +51,7 @@ export default function Frame(props) {
 
   const changeAlignment = (newAlignment, index) => {
     alignments[index] = newAlignment;
+    console.log(alignments);
     setAlignments(Array.from(alignments));
   }
 
@@ -71,7 +72,7 @@ export default function Frame(props) {
       setCurrDragged(null);
       return;
     }
-    // if (Frame.currEditing !== null) return; // If editing, then cannot highlight
+    if (Frame.currEditing !== null) return; // If editing, then cannot highlight
     setCurrChosen(currChosen===id?null:id);
   }
 
