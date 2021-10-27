@@ -1,3 +1,31 @@
+@font-face {
+    font-family: "Lobster";
+    src: url("../fonts/Lobster/Lobster.woff2") format("woff2"),
+         url("../fonts/Lobster/Lobster.woff") format("woff"),
+         url("../fonts/Lobster/Lobster.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Raleway";
+    src: url("../fonts/Raleway/Raleway.woff2") format("woff2"),
+         url("../fonts/Raleway/Raleway.woff") format("woff"),
+         url("../fonts/Raleway/Raleway.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "PlayfairDisplay";
+    src: url("../fonts/PlayfairDisplay/PlayfairDisplay.woff2") format("woff2"),
+         url("../fonts/PlayfairDisplay/PlayfairDisplay.woff") format("woff"),
+         url("../fonts/PlayfairDisplay/PlayfairDisplay.ttf") format("truetype");
+}
+
+@font-face {
+    font-family: "Pacifico";
+    src: url("../fonts/Pacifico/Pacifico.woff2") format("woff2"),
+         url("../fonts/Pacifico/Pacifico.woff") format("woff"),
+         url("../fonts/Pacifico/Pacifico.ttf") format("truetype");
+}
+
 .title {
 }
 
@@ -10,7 +38,8 @@
 }
 
 .frame {
-    border:0.1in black;
+    /* border:0.1in black; */
+    border-color: black;
     border-style: solid;
     position: fixed;
     left: 50%;
@@ -21,3 +50,17 @@
     position: fixed;
 }
 
+.vl-red {
+    border-left: 1px solid red;
+    position: absolute;
+    left: 50%;
+    height: 100%;
+    margin-left: -3px;
+    top: 0;
+}
+.lvl-red {
+    left: 0%;
+}
+.rvl-red {
+    left: 100%;
+}

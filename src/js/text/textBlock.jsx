@@ -1,9 +1,11 @@
 import React from 'react';
 import { useState, useRef, useEffect } from "react";
-// import { defaultFontSize } from "./consts";
+import { selectedStyle, showButtonsZoomMin } from "../consts";
 import css from './style.css';
 
-export default function TextBlock({ text, onChange, zoom, canEdit, fontSize, onFontSizeChange, highlighted, onClick, style }) {
+const min=(a,b)=>a<b?a:b;
+
+export default function TextBlock({ text, onChange, zoom, canEdit, fontSize, onFontSizeChange, selected, onClick, style, beingDragged, alignment }) {
   // TEXT AND EDITING
   const [editing, setEditing] = useState(false); // boolean for editing mode
   const [changed, setChanged] = useState(false); // boolean for whether or not anything has been changed
@@ -22,10 +24,8 @@ export default function TextBlock({ text, onChange, zoom, canEdit, fontSize, onF
   }
   const changeText = (e) => {
     e.preventDefault();
-    if (e.target.value !== original) {
-      setChanged(true);
-      setCurrText(e.target.value);
-    }
+    setChanged(e.target.value !== original);
+    setCurrText(e.target.value);
   }
   const printTextBox = () => {
     if (editing) {
@@ -41,6 +41,21 @@ export default function TextBlock({ text, onChange, zoom, canEdit, fontSize, onF
     return text;
   }
 
+  const drawRedLines = () => {
+    if (!beingDragged) return "";
+    const {hAlign, vAlign} = alignment;
+    if (hAlign === 0) {
+      return <div className="vl-red"></div>;
+    }
+    else if (hAlign < 0) {
+      return <div className="vl-red lvl-red"></div>;
+    }
+    else {
+      return <div className="vl-red rvl-red"></div>;
+    }
+    return "";
+  }
+
   // FONT SIZE
   const getFontSizeString = (z) => `${zoom*currFontSize}px`;
   const [currFontSize, setFontSize] = useState(fontSize);
@@ -54,11 +69,11 @@ export default function TextBlock({ text, onChange, zoom, canEdit, fontSize, onF
 
   // STYLE
   const getStyle = (mode) => {
-    let s = {...style};
+    let s = {...style, ...(selected?selectedStyle:{})};
     s['fontSize'] = getFontSizeString(zoom);
-    if (highlighted) {
-      s['backgroundColor'] = '#e4bbd8';
-    }
+    // if (selected) {
+    //   s['backgroundColor'] = '#e4bbd8';
+    // }
     if (mode === "input") {
       s['width'] = `${currText.length*currFontSize*zoom/2}px`;
       s['backgroundColor'] = '#d3d3d3';
@@ -85,25 +100,28 @@ export default function TextBlock({ text, onChange, zoom, canEdit, fontSize, onF
     }
   }, []);
 
+  const shouldShowButtons = () => {
+    if (editing) return false;
+    if (zoom < showButtonsZoomMin) return false;
+    // if (fontSize )
+    return true;
+  }
+
   return (<div
     className="text"
     ref={dblClickRef}
     style={getStyle()}
     onClick={(e)=>{e.preventDefault();const node=dblClickRef.current;if(node){ onClick(); }}}
   >
+    {drawRedLines()}
     {printTextBox()}
-    {!editing?
-      <div className="text-font-size">
+    {shouldShowButtons()?
+      <div className="text-font-size" style={{transform: `scale(${min(100, 2*zoom*currFontSize)}%)`}}>
         <button 
           onClick={(e)=>{e.stopPropagation();setThisFontSize(currFontSize-1);}}
-          // onMouseEnter={()=>{const node=dblClickRef.current;if(node){node.removeEventListener("dblclick", dblCLickListener);console.log('hello', node);}}}
-          // onMouseOut={()=>{const node=dblClickRef.current;if(node){node.addEventListener("dblclick", dblCLickListener);console.log('goodbye');}}}
-          // onMouseOut={()=>{const node=dblClickRef.current;if(node)node.addEventListener("dblclick", dblCLickListener)}}
         >-</button>
         <button
           onClick={(e)=>{e.stopPropagation();setThisFontSize(currFontSize+1);}}
-          // onMouseEnter={()=>{const node=dblClickRef.current;if(node){node.removeEventListener("dblclick", dblCLickListener);console.log('hello', node);}}}
-          // onMouseOut={()=>{const node=dblClickRef.current;if(node){node.addEventListener("dblclick", dblCLickListener);console.log('goodbye');}}}
         >+</button>
       </div>:""
     }

@@ -2,7 +2,7 @@ import React from 'react';
 import { useState, useRef, useEffect } from "react";
 import Text from "./text/text";
 import StyleBar from "./stylebar";
-import { defaultText, defaultFontSize } from "./consts";
+import { defaultText, defaultFontSize, defaultFontFamily } from "./consts";
 import { fetch_with_json } from "./util";
 // import css from './style.css';
 // import PdfDisplay from './pdfDisplay'; 
@@ -19,6 +19,7 @@ export default function Frame(props) {
   const [positions, setPositions] = useState([]);
   const [fontSizes, setFontSizes] = useState([]);
   const [styles, setStyles] = useState([]);
+  const [alignments, setAlignments] = useState([]);
   const [currChosen, setCurrChosen] = useState(null);
   const setCurrEditing = (x) => { Frame.currEditing=x; }
   const editText = (id) => {
@@ -48,10 +49,21 @@ export default function Frame(props) {
     setFontSizes(Array.from(fontSizes));
   }
 
+  const changeAlignment = (newAlignment, index) => {
+    alignments[index] = newAlignment;
+    setAlignments(Array.from(alignments));
+  }
+
+  const changeStyle = (newStyle, index) => {
+    styles[index] = newStyle;
+    setStyles(Array.from(styles));
+  }
+
   const newText = () => {
     setTexts(texts.concat(defaultText));
     setFontSizes(fontSizes.concat(defaultFontSize));
-    setStyles(styles.concat({fontFamily: 'Arial, Helvetica, sans-serif'}));
+    setStyles(styles.concat({fontFamily: defaultFontFamily}));
+    setAlignments(alignments.concat({hAlign: -1, vAlign: -1}));
   }
 
   const chooseText = (id) => {
@@ -72,7 +84,6 @@ export default function Frame(props) {
 
   const onKeyDown = (e) => {
     if (e.key === 'Backspace' && currChosen !== null && currChosen !== Frame.currEditing) {
-      console.log(texts, currChosen)
       changeText(null, currChosen);
       setCurrChosen(null);
     }
@@ -81,7 +92,6 @@ export default function Frame(props) {
   // const pdfId = 
   const sendFetch = (e) => {
     e.preventDefault();
-    console.log(texts, positions, fontSizes, styles);
     fetch_with_json(`${props.url}getPDF`, [texts, positions, fontSizes, styles])
       .then(response => response.json())
       .then(data => {
@@ -92,35 +102,38 @@ export default function Frame(props) {
 
   const [info, setInfo] = useState('BRIGHT');
   const clickButton = (e) => {
-    fetch('https://google.com')
-      .then(data => setInfo(data))
-      // .then(data => data.json())
-      // .then(json => {
-      //   setInfo(json['field'])
-      // });
+    // fetch('https://google.com')
+    //   .then(data => setInfo(data))
+    //   // .then(data => data.json())
+    //   // .then(json => {
+    //   //   setInfo(json['field'])
+    //   // });
   };
 
   return (<div><button onClick={clickButton}>{info}</button>
     <div 
       className="frame"
-      style={{height: `${height*zoom}px`, width: `${width*zoom}px`}}
+      style={{height: `${height*zoom}px`, width: `${width*zoom}px`, borderWidth: `${0.03*zoom}in`}}
       tabIndex="0"
       onKeyDown={onKeyDown}
     >
-        {texts.map((t, i) => t===null?"":<Text
-          text={t} key={i}
-          id={i}
-          zoom={zoom}
-          onChange={changeText}
-          onEdit={editText}
-          fontSize={fontSizes[i]}
-          onFontSizeChange={changeFontSize}
-          onDrag={dragText}
-          onDelete={()=>{changeText(null, i);}}
-          highlighted={currChosen===i}
-          onClick={chooseText}
-          style={styles[i]}
-        />)}
+      {currDragged !== null?<div className="vl-red"></div>:""}
+      {texts.map((t, i) => t===null?"":<Text
+        text={t} key={i}
+        id={i}
+        zoom={zoom}
+        onChange={changeText}
+        onEdit={editText}
+        fontSize={fontSizes[i]}
+        onFontSizeChange={changeFontSize}
+        beingDragged={i===currDragged?true:false}
+        onDrag={dragText}
+        onDelete={()=>{changeText(null, i);}}
+        selected={currChosen===i}
+        onClick={chooseText}
+        style={styles[i]}
+        alignment={alignments[i]}
+      />)}
     </div>
     <div>
       <div className="options">
@@ -131,7 +144,24 @@ export default function Frame(props) {
         </div>
         <button onClick={newText}>New</button>
         <div>
-          {currChosen !== null ? <StyleBar fontSize={fontSizes[currChosen]} onChange={(x)=>{changeFontSize(x, currChosen)}}/>:""}
+          {currChosen !== null ? <StyleBar 
+            fontSize={fontSizes[currChosen]} 
+            onFontSizeChange={(x)=>{
+              if (isNaN(x)) return false;
+              changeFontSize(parseInt(x), currChosen);
+              return true;
+            }}
+            alignment={alignments[currChosen]}
+            onAlignmentChange={(a)=>{
+              changeAlignment(a, currChosen);
+              return true;
+            }}
+            style={styles[currChosen]}
+            onStyleChange={(s)=>{
+              changeStyle(s, currChosen);
+              return true;
+            }}
+          />:""}
         </div>
       </div>
     </div>

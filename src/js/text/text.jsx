@@ -1,15 +1,18 @@
 import React from 'react';
 import { useState, useRef, useEffect } from "react";
 import Draggable from 'react-draggable';
+import { useTextWidth } from '@imagemarker/use-text-width'
 import TextBlock from './textBlock';
-import { defaultFontSize } from '../consts';
+import { defaultFontSize, frameHeight, frameWidth } from '../consts';
 // import styles from './style.css';
 
-export default function Text({ text, zoom, id, onChange, onEdit, fontSize, onFontSizeChange, onDelete, highlighted, onClick, style, onDrag }) {
+export default function Text({ text, zoom, id, onChange, onEdit, fontSize, onFontSizeChange, onDelete, selected, onClick, style, beingDragged, onDrag, alignment }) {
   // POSITION AND ZOOM
   const [currZoom, setCurrZoom] = useState(zoom);
   const [draggablePos, setDraggablePos] = useState({x: -15*defaultFontSize, y: 0});
   const [currPos, setCurrPos] = useState(draggablePos);
+  const textWidth = useTextWidth({text, font: `${fontSize}px ${style.fontFamily}`});
+  // console.log(`${style.fontFamily} ${currZoom*fontSize}px`, textWidth);
   useEffect(()=>{
     if (currZoom !== zoom) {
       let {x, y} = currPos;
@@ -24,7 +27,25 @@ export default function Text({ text, zoom, id, onChange, onEdit, fontSize, onFon
   const onBeingDragged = (e, {x, y}) => {
     setCurrPos({x, y});
     setDraggablePos(undefined);
-    onDrag(id, x/currZoom, y/currZoom);
+
+    // Change x, y for python alignment-wary zoom-wary coords
+    x /= currZoom;
+    y /= currZoom;
+    const {hAlign, vAlign} = alignment;
+    if (hAlign === 0) {
+      x += textWidth/2;
+    }
+    else if (hAlign > 0) {
+      x += textWidth;
+    }
+    // if (vAlign === 0) {
+
+    // }
+    // else if (vAlign > 0) {
+      
+    // }
+    console.log(x, y, textWidth);
+    onDrag(id, x, y);
   };
 
   // TEXT
@@ -45,7 +66,7 @@ export default function Text({ text, zoom, id, onChange, onEdit, fontSize, onFon
     return onEdit(id);
   };
 
-  return (
+  return (<div>
     <Draggable 
       grid={[zoom, zoom]}
       disabled={editing}
@@ -61,10 +82,12 @@ export default function Text({ text, zoom, id, onChange, onEdit, fontSize, onFon
         canEdit={thisOnEdit}
         fontSize={fontSize}
         onFontSizeChange={(f) => {onFontSizeChange(f, id);}}
-        highlighted={highlighted}
+        selected={selected}
         onClick={()=>{onClick(id);}}
         style={style}
+        beingDragged={beingDragged}
+        alignment={alignment}
       /></div>
-    </Draggable>
+    </Draggable></div>
   );
 }
