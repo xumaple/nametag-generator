@@ -26,8 +26,9 @@ export function SelectableOptions({ options, currOption, onSelect, textInputWidt
     if (currOption !== prevOption) {
       setText(options.includes(currOption)?"":currOption);
       setPrevOption(currOption);
+      console.log('changing option');
     }
-  });
+  }, [currOption]);
 
   return (<div>
     {textInputWidth>0?<input
@@ -48,7 +49,7 @@ export function SelectableOptions({ options, currOption, onSelect, textInputWidt
 
 export function ToggleButton({ buttonText, toggleState, currState, onClick }) { // ToggleState is the state it wants to be in to be selected
   const [selected, setSelected] = useState(toggleState === currState);
-  console.log(css);
+  // console.log(css);
   useEffect(()=>{
     setSelected(toggleState === currState);
   });

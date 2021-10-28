@@ -1,20 +1,18 @@
 import React from 'react';
 import { useState, useRef, useEffect } from "react";
 import Draggable from 'react-draggable';
-import { useTextWidth } from '@imagemarker/use-text-width'
+import { useTextWidth } from './useTextWidth'
 import TextBlock from './textBlock';
-import { defaultFontSize, frameHeight, frameWidth } from '../consts';
+import { defaultStartingPos } from '../consts';
 // import styles from './style.css';
 
 export default function Text({ text, zoom, id, onChange, onEdit, fontSize, onFontSizeChange, onDelete, selected, onClick, style, beingDragged, onDrag, alignment }) {
   // POSITION AND ZOOM
   const [currZoom, setCurrZoom] = useState(zoom);
-  const [draggablePos, setDraggablePos] = useState({x: -15*defaultFontSize, y: 0});
+  const [draggablePos, setDraggablePos] = useState(defaultStartingPos);
   const [currPos, setCurrPos] = useState(draggablePos);
   const textWidth = useTextWidth({text, font: `${fontSize}px ${style.fontFamily}`});
-  console.log(`${fontSize}px ${style.fontFamily}`, textWidth);
-  useEffect(()=>{
-    if (currZoom !== zoom) {
+  useEffect(()=>{ // Change zoom
       let {x, y} = currPos;
       x *= zoom/currZoom;
       y *= zoom/currZoom;
@@ -22,8 +20,7 @@ export default function Text({ text, zoom, id, onChange, onEdit, fontSize, onFon
       setDraggablePos({x, y});
       setCurrPos({x, y});
       setCurrZoom(zoom);
-    }
-  });
+  }, [zoom]);
   const onBeingDragged = (e, {x, y}) => {
     setCurrPos({x, y});
     setDraggablePos(undefined);
@@ -44,9 +41,48 @@ export default function Text({ text, zoom, id, onChange, onEdit, fontSize, onFon
     // else if (vAlign > 0) {
       
     // }
-    console.log(x, y, textWidth);
+    console.log(currPos.x, currPos.y, x, y, textWidth);
     onDrag(id, x, y);
   };
+  const {hAlign, vAlign} = alignment;
+  // if (hAlign === 0) {
+  //   const rem = (currPos.x + zoom*textWidth/2) % zoom;
+  //   if (rem !== 0) {
+  //     currPos.x = currPos.x + (rem>=(zoom*.5)?1:0)-rem;
+  //     setCurrPos(currPos);
+  //     setDraggablePos(currPos);
+  //     console.log('new:', currPos);
+  //   }
+  // }
+  // else if (hAlign > 0) {
+  //   const rem = (currPos.x + zoom*textWidth) % zoom;
+  //   if (rem !== 0) {
+  //     currPos.x = currPos.x + (rem>=(zoom*.5)?1:0)-rem;
+  //     setCurrPos(currPos);
+  //     setDraggablePos(currPos);
+  //     console.log('new:', currPos);
+  //   }
+  // }
+  let hrem = 0, vrem = 0;
+  if (hAlign < 0) hrem = currPos.x % zoom;
+  if (hAlign === 0) hrem = (currPos.x + zoom*textWidth/2) % zoom;
+  else if (hAlign > 0) hrem = (currPos.x + zoom*textWidth) % zoom;
+  // if (vAlign === 0) vrem = (currPos.y + zoom*textHeight/2) % zoom;
+  // else if (valign > 0) vrem = (currPos.y + zoom*textHeight) % zoom;
+  let needsUpdate = false;
+  if (hrem !== 0) {
+    currPos.x += (hrem>=(zoom*.5)?1:0)-hrem;
+    needsUpdate = true;
+  }
+  if (vrem !== 0) {
+    currPos.y += (vrem>=(zoom*.5)?1:0)-vrem;
+    needsUpdate = true;
+  }
+  if (needsUpdate) {
+    setCurrPos(currPos);
+    setDraggablePos(currPos);
+    console.log(currPos);
+  }
 
   // TEXT
   const [currText, setText] = useState(text);
@@ -87,6 +123,7 @@ export default function Text({ text, zoom, id, onChange, onEdit, fontSize, onFon
         style={style}
         beingDragged={beingDragged}
         alignment={alignment}
+        textWidth={textWidth}
       /></div>
     </Draggable></div>
   );

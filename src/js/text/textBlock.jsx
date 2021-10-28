@@ -1,12 +1,11 @@
 import React from 'react';
 import { useState, useRef, useEffect } from "react";
-import { useTextWidth } from '@imagemarker/use-text-width'
 import { selectedStyle, showButtonsZoomMin } from "../consts";
 import css from './style.css';
 
 const min=(a,b)=>a<b?a:b;
 
-export default function TextBlock({ text, onChange, zoom, canEdit, fontSize, onFontSizeChange, selected, onClick, style, beingDragged, alignment }) {
+export default function TextBlock({ text, onChange, zoom, canEdit, fontSize, onFontSizeChange, selected, onClick, style, beingDragged, alignment, textWidth }) {
   // TEXT AND EDITING
   const [editing, setEditing] = useState(false); // boolean for editing mode
   const [changed, setChanged] = useState(false); // boolean for whether or not anything has been changed
@@ -69,7 +68,6 @@ export default function TextBlock({ text, onChange, zoom, canEdit, fontSize, onF
   });
 
   // STYLE
-  const textWidth = useTextWidth({currText, font: `${getFontSizeString(1)} ${style.fontFamily}`});
   const getStyle = (mode) => {
     let s = {...style, ...(selected?selectedStyle:{})};
     s['fontSize'] = getFontSizeString(zoom);
@@ -77,8 +75,8 @@ export default function TextBlock({ text, onChange, zoom, canEdit, fontSize, onF
     //   s['backgroundColor'] = '#e4bbd8';
     // }
     if (mode === "input") {
-      console.log(textWidth, currText, `${fontSize}px ${style.fontFamily}`);
-      s['width'] = `${textWidth}px`;
+      // console.log(textWidth, currText, `${fontSize}px ${style.fontFamily}`);
+      s['width'] = `${zoom*textWidth+2}px`;
       s['backgroundColor'] = '#d3d3d3';
     }
     return s;
@@ -106,6 +104,7 @@ export default function TextBlock({ text, onChange, zoom, canEdit, fontSize, onF
   const shouldShowButtons = () => {
     if (editing) return false;
     if (zoom < showButtonsZoomMin) return false;
+    if (currText.length < 3) return false;
     // if (fontSize )
     return true;
   }

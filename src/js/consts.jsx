@@ -13,6 +13,7 @@ export const fontFamilysList = [
 export const defaultText = 'New text';
 export const defaultFontSize = 12;
 export const defaultFontFamily = fontFamilysList[0];
+export const defaultStartingPos = {x: defaultFontSize, y: 0};
 
 export const frameHeight="160";
 export const frameWidth="252";

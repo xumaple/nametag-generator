@@ -51,17 +51,17 @@ function AlignmentBar({ alignment, onChange }) {
       }}
     >&gt;</button> */}
     <ToggleButton 
-      buttonText="&lt;"
+      buttonText="|__"
       toggleState={-1}
       currState={hAlign}
       onClick={onToggleHAlignButtonClick} />
     <ToggleButton 
-      buttonText="="
+      buttonText="_|_"
       toggleState={0}
       currState={hAlign}
       onClick={onToggleHAlignButtonClick} />
     <ToggleButton 
-      buttonText="&gt;"
+      buttonText="__|"
       toggleState={1}
       currState={hAlign}
       onClick={onToggleHAlignButtonClick} />

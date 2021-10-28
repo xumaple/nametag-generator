@@ -67,6 +67,12 @@ export default function Frame(props) {
     setAlignments(alignments.concat({hAlign: -1, vAlign: -1}));
   }
 
+  const deleteText = (index) => {
+    changeText(null, index);
+    setCurrChosen(null);
+    console.log('deleted')
+  }
+
   const chooseText = (id) => {
     if (currDragged === id) {
       setCurrDragged(null);
@@ -85,8 +91,7 @@ export default function Frame(props) {
 
   const onKeyDown = (e) => {
     if (e.key === 'Backspace' && currChosen !== null && currChosen !== Frame.currEditing) {
-      changeText(null, currChosen);
-      setCurrChosen(null);
+      deleteText(currChosen);
     }
   }
 
@@ -162,6 +167,7 @@ export default function Frame(props) {
               changeStyle(s, currChosen);
               return true;
             }}
+            onDelete={deleteText}
           />:""}
         </div>
       </div>
