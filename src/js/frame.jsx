@@ -39,6 +39,7 @@ export default function Frame(props) {
       console.log("Error!! Bad index over array", index, texts);
     }
     if (newText === "") newText = null;
+    setCurrChosen(index);
     texts[index] = newText;
     console.log(texts);
     setTexts(texts);
@@ -85,6 +86,7 @@ export default function Frame(props) {
   const [currDragged, setCurrDragged] = useState(null);
   const dragText = (id, x, y) => {
     if (id !== currDragged) setCurrDragged(id);
+    setCurrChosen(id);
     positions[id] = {x, y};
     setPositions(Array.from(positions));
   }
