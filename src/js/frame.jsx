@@ -5,7 +5,7 @@ import StyleBar from "./stylebar";
 import { defaultText, defaultFontSize, defaultFontFamily } from "./consts";
 import { fetch_with_json } from "./util";
 // import css from './style.css';
-// import PdfDisplay from './pdfDisplay'; 
+import PdfDisplay from './pdfDisplay'; 
 
 function max(a,b) {
   return a>b?a:b;
@@ -109,6 +109,7 @@ export default function Frame(props) {
   }
 
   const [info, setInfo] = useState('BRIGHT');
+  const [pdf, setPdf] = useState(null);
   const clickButton = (e) => {
     // fetch('https://google.com')
     //   .then(data => setInfo(data))
@@ -116,6 +117,15 @@ export default function Frame(props) {
     //   // .then(json => {
     //   //   setInfo(json['field'])
     //   // });
+    fetch('/api/pdfs/test.pdf', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/pdf',
+      },
+    })
+    .then((response) => response.blob())
+    .then((blob) => { setPdf(blob); })
+    .catch((e) => { console.log(e); });
   };
 
   return (<div><button onClick={clickButton}>{info}</button>
@@ -174,7 +184,7 @@ export default function Frame(props) {
         </div>
       </div>
     </div>
-    {/* <PdfDisplay file={{url: 'http://0.0.0.0:8000/api/v1/getPdf/test.pdf/'}} /> */}
+    {pdf !== null ? <PdfDisplay file={pdf} /> : ""}
   </div>);
 }
 

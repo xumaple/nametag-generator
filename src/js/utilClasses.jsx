@@ -58,3 +58,33 @@ export function ToggleButton({ buttonText, toggleState, currState, onClick }) { 
     onClick={(e) => { e.stopPropagation(); onClick(toggleState); }}
   >{buttonText}</button>
 }
+
+export function DownloadButton({ text, blob }) {
+  const onClick = (e) => {
+    e.stopPropagation();
+    
+    // Create blob link to download
+    const url = window.URL.createObjectURL(
+      new Blob([blob]),
+    );
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute(
+      'download',
+      'Nametags.pdf',
+    );
+
+    // Append to html link element page
+    document.body.appendChild(link);
+
+    // Start download
+    link.click();
+
+    // Clean up and remove the link
+    link.parentNode.removeChild(link);
+  } 
+
+  return <button onClick={onClick}>
+    {text}
+  </button>;
+}
